@@ -43,13 +43,25 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const switchRole = async (roleId: string) => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      console.error('Cannot switch role: No current user');
+      throw new Error('No current user');
+    }
+
+    console.log('UserContext: Switching role from', currentUser.activeRole, 'to', roleId);
+    console.log('User roles:', currentUser.roles);
 
     try {
       const updatedUser = await usersApi.switchRole(currentUser._id, { activeRole: roleId });
+      console.log('UserContext: Role switched successfully, updated user:', updatedUser);
       setCurrentUser(updatedUser);
-    } catch (error) {
-      console.error('Failed to switch role:', error);
+    } catch (error: any) {
+      console.error('UserContext: Failed to switch role:', error);
+      console.error('Error details:', {
+        message: error?.message,
+        response: error?.response?.data,
+        status: error?.response?.status,
+      });
       throw error;
     }
   };
