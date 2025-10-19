@@ -20,14 +20,17 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { useUser } from '@/lib/UserContext';
+import { canAccessMenuItem } from '@/lib/menuConfig';
 
 const drawerWidth = 260;
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { t } = useLanguage();
+  const { currentUser } = useUser();
 
-  const menuItems = [
+  const allMenuItems = [
     { text: t('common.dashboard'), icon: <DashboardIcon />, href: '/' },
     { text: t('common.users'), icon: <PeopleIcon />, href: '/users' },
     { text: t('common.products'), icon: <InventoryIcon />, href: '/products' },
@@ -35,6 +38,11 @@ export default function Sidebar() {
     { text: t('common.analytics'), icon: <BarChartIcon />, href: '/analytics' },
     { text: t('common.settings'), icon: <SettingsIcon />, href: '/settings' },
   ];
+
+  // Filter menu items based on current user's active role
+  const menuItems = currentUser
+    ? allMenuItems.filter((item) => canAccessMenuItem(item.href, currentUser.activeRole))
+    : allMenuItems; // Show all items if user not loaded yet
 
   return (
     <Drawer
