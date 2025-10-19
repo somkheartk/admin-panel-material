@@ -248,6 +248,32 @@ npm run start
 
 This project is open source and available under the [MIT License](LICENSE).
 
+## 📚 Documentation / เอกสาร
+
+### Complete Documentation:
+- **[API Specification](docs/API_SPEC.md)** - Comprehensive API documentation with all endpoints, request/response formats, and examples
+- **[Wireframe Documentation](docs/WIREFRAME.md)** - UI/UX design specifications, component layouts, and responsive design guidelines
+- **[Test Results](docs/TEST_RESULTS.md)** - Unit test coverage report with 60 tests, 95.45% code coverage
+
+### Test Coverage:
+- **60 unit tests** - All passing ✅
+- **95.45% code coverage** - Exceeds industry standard
+- **4 test suites** - Users & Orders (Services & Controllers)
+
+Run tests:
+```bash
+cd backend
+npm test              # Run all tests
+npm run test:cov      # Run with coverage report
+npm run test:watch    # Watch mode
+```
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/somkheartk/admin-panel-material/issues).
