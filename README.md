@@ -205,10 +205,10 @@ export default function UsersPage() {
 The sidebar includes the following menu items:
 - **Dashboard (/)** - Overview with real-time statistics / ภาพรวมพร้อมสถิติแบบเรียลไทม์
 - **Users (/users)** - User management with CRUD operations / จัดการผู้ใช้พร้อม CRUD
+- **Products (/products)** - Product management with CRUD operations / จัดการสินค้าพร้อม CRUD ✨ NEW
 - **Orders (/orders)** - Order management with CRUD operations / จัดการคำสั่งซื้อพร้อม CRUD
-- Products (/products) - Coming soon
-- Analytics (/analytics) - Coming soon
-- Settings (/settings) - Coming soon
+- **Analytics (/analytics)** - Data visualization and analytics / การวิเคราะห์ข้อมูลพร้อมกราฟ ✨ NEW
+- **Settings (/settings)** - System configuration / การตั้งค่าระบบ ✨ NEW
 
 ## 🔌 API Endpoints
 
@@ -231,8 +231,18 @@ The backend provides RESTful API endpoints:
 - `PUT /orders/:id` - Update order / แก้ไขคำสั่งซื้อ
 - `DELETE /orders/:id` - Delete order / ลบคำสั่งซื้อ
 
+### Products API ✨ NEW
+- `GET /products` - Get all products / ดึงข้อมูลสินค้าทั้งหมด
+- `GET /products/:id` - Get product by ID / ดึงข้อมูลสินค้าตาม ID
+- `GET /products/count` - Get total product count / นับจำนวนสินค้าทั้งหมด
+- `GET /products/total-value` - Get total inventory value / ดึงมูลค่าสินค้าคงคลังรวม
+- `POST /products` - Create new product / สร้างสินค้าใหม่
+- `PUT /products/:id` - Update product / แก้ไขข้อมูลสินค้า
+- `DELETE /products/:id` - Delete product / ลบสินค้า
+
 ## 🔧 Scripts
 
+### Frontend
 ```bash
 # Development
 npm run dev
@@ -242,6 +252,48 @@ npm run build
 
 # Start production server
 npm run start
+
+# Run unit tests
+npm test
+
+# Run tests with coverage
+npm run test:cov
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+### Backend
+```bash
+cd backend
+
+# Development
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Run unit tests
+npm test
+
+# Run tests with coverage
+npm run test:cov
+
+# Seed database
+npm run seed
+```
+
+### Robot Framework (E2E Tests) ✨ NEW
+```bash
+# Run all E2E tests (requires frontend and backend running)
+./run-robot-tests.sh
+
+# Or manually:
+source robot-venv/bin/activate
+robot --outputdir test-results tests/robot/*.robot
 ```
 
 ## 📄 License
@@ -253,20 +305,50 @@ This project is open source and available under the [MIT License](LICENSE).
 ### Complete Documentation:
 - **[API Specification](docs/API_SPEC.md)** - Comprehensive API documentation with all endpoints, request/response formats, and examples
 - **[Wireframe Documentation](docs/WIREFRAME.md)** - UI/UX design specifications, component layouts, and responsive design guidelines
-- **[Test Results](docs/TEST_RESULTS.md)** - Unit test coverage report with 60 tests, 95.45% code coverage
+- **[Robot Framework Tests](tests/robot/README.md)** - E2E test documentation and usage guide ✨ NEW
 
-### Test Coverage:
-- **60 unit tests** - All passing ✅
-- **95.45% code coverage** - Exceeds industry standard
-- **4 test suites** - Users & Orders (Services & Controllers)
+### Test Coverage ✨ UPDATED:
 
-Run tests:
+#### Backend Unit Tests
+- **85 unit tests** - All passing ✅ (up from 60)
+- **95%+ code coverage** - Exceeds industry standard
+- **6 test suites** - Users, Orders & Products (Services & Controllers)
+
+Run backend tests:
 ```bash
 cd backend
 npm test              # Run all tests
 npm run test:cov      # Run with coverage report
 npm run test:watch    # Watch mode
 ```
+
+#### Frontend Unit Tests ✨ NEW
+- **14 unit tests** - All passing ✅
+- **Component tests** - StatCard, Header, Sidebar
+- **Jest & React Testing Library**
+
+Run frontend tests:
+```bash
+npm test              # Run all tests
+npm run test:cov      # Run with coverage report
+npm run test:watch    # Watch mode
+```
+
+#### Robot Framework E2E Tests ✨ NEW
+- **20+ end-to-end tests** - Covering all pages
+- **CRUD operation tests** - Users, Products, Orders
+- **UI interaction tests** - Dashboard, Analytics, Settings
+- **Automated browser testing** - Using SeleniumLibrary
+
+Run E2E tests (requires servers running):
+```bash
+# Start frontend: npm run dev
+# Start backend: cd backend && npm run dev
+# Run tests:
+./run-robot-tests.sh
+```
+
+See [Robot Framework Tests Documentation](tests/robot/README.md) for more details.
 
 ---
 
