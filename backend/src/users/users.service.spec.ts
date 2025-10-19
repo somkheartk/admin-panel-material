@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.schema';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { CreateUserDto, UpdateUserDto, SwitchRoleDto } from './user.dto';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -15,6 +15,8 @@ describe('UsersService', () => {
     email: 'somchai@example.com',
     phone: '0812345678',
     status: 'active',
+    roles: ['admin', 'user'],
+    activeRole: 'admin',
     role: 'แอดมิน',
     createdAt: new Date('2024-01-15T10:30:00.000Z'),
     updatedAt: new Date('2024-01-15T10:30:00.000Z'),
@@ -28,6 +30,8 @@ describe('UsersService', () => {
       email: 'somying@example.com',
       phone: '0823456789',
       status: 'active',
+      roles: ['user'],
+      activeRole: 'user',
       role: 'ผู้ใช้',
       createdAt: new Date('2024-01-16T11:20:00.000Z'),
       updatedAt: new Date('2024-01-16T11:20:00.000Z'),
@@ -291,6 +295,80 @@ describe('UsersService', () => {
 
       expect(result).toBe(0);
       expect(mockUserModel.countDocuments).toHaveBeenCalled();
+    });
+  });
+
+  describe('switchRole', () => {
+    it('should switch user role successfully', async () => {
+      const switchRoleDto: SwitchRoleDto = {
+        activeRole: 'user',
+      };
+
+      const updatedUser = {
+        ...mockUser,
+        activeRole: 'user',
+      };
+
+      const findByIdExecMock = jest.fn().mockResolvedValue(mockUser);
+      mockUserModel.findById = jest.fn().mockReturnValue({
+        exec: findByIdExecMock,
+      });
+
+      const updateExecMock = jest.fn().mockResolvedValue(updatedUser);
+      mockUserModel.findByIdAndUpdate = jest.fn().mockReturnValue({
+        exec: updateExecMock,
+      });
+
+      const result = await service.switchRole(
+        '507f1f77bcf86cd799439011',
+        switchRoleDto
+      );
+
+      expect(result).toEqual(updatedUser);
+      expect(result.activeRole).toBe('user');
+      expect(mockUserModel.findByIdAndUpdate).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439011',
+        { activeRole: 'user' },
+        { new: true }
+      );
+    });
+
+    it('should throw BadRequestException when role not in user roles', async () => {
+      const switchRoleDto: SwitchRoleDto = {
+        activeRole: 'invalid_role',
+      };
+
+      const findByIdExecMock = jest.fn().mockResolvedValue(mockUser);
+      mockUserModel.findById = jest.fn().mockReturnValue({
+        exec: findByIdExecMock,
+      });
+
+      await expect(
+        service.switchRole('507f1f77bcf86cd799439011', switchRoleDto)
+      ).rejects.toThrow(BadRequestException);
+
+      await expect(
+        service.switchRole('507f1f77bcf86cd799439011', switchRoleDto)
+      ).rejects.toThrow("Role 'invalid_role' is not assigned to this user");
+    });
+
+    it('should throw NotFoundException when user not found', async () => {
+      const switchRoleDto: SwitchRoleDto = {
+        activeRole: 'user',
+      };
+
+      const findByIdExecMock = jest.fn().mockResolvedValue(null);
+      mockUserModel.findById = jest.fn().mockReturnValue({
+        exec: findByIdExecMock,
+      });
+
+      await expect(
+        service.switchRole('507f1f77bcf86cd799439999', switchRoleDto)
+      ).rejects.toThrow(NotFoundException);
+
+      await expect(
+        service.switchRole('507f1f77bcf86cd799439999', switchRoleDto)
+      ).rejects.toThrow('User with ID 507f1f77bcf86cd799439999 not found');
     });
   });
 });

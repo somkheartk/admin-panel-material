@@ -11,6 +11,8 @@ const UserSchema = new mongoose.Schema({
   email: String,
   phone: String,
   status: String,
+  roles: [String],
+  activeRole: String,
   role: String,
 }, { timestamps: true });
 
@@ -27,11 +29,11 @@ const User = mongoose.model('User', UserSchema);
 const Order = mongoose.model('Order', OrderSchema);
 
 const users = [
-  { name: 'สมชาย ใจดี', email: 'somchai@example.com', phone: '081-234-5678', status: 'active', role: 'admin' },
-  { name: 'สมหญิง รักดี', email: 'somying@example.com', phone: '082-345-6789', status: 'active', role: 'user' },
-  { name: 'ประเสริฐ สุขใจ', email: 'prasert@example.com', phone: '083-456-7890', status: 'active', role: 'user' },
-  { name: 'วิภา มีสุข', email: 'wipa@example.com', phone: '084-567-8901', status: 'active', role: 'user' },
-  { name: 'นิรันดร์ เจริญ', email: 'niran@example.com', phone: '085-678-9012', status: 'inactive', role: 'user' },
+  { name: 'สมชาย ใจดี', email: 'somchai@example.com', phone: '081-234-5678', status: 'active', roles: ['admin', 'manager'], activeRole: 'admin', role: 'admin' },
+  { name: 'สมหญิง รักดี', email: 'somying@example.com', phone: '082-345-6789', status: 'active', roles: ['user', 'editor'], activeRole: 'user', role: 'user' },
+  { name: 'ประเสริฐ สุขใจ', email: 'prasert@example.com', phone: '083-456-7890', status: 'active', roles: ['user', 'viewer'], activeRole: 'user', role: 'user' },
+  { name: 'วิภา มีสุข', email: 'wipa@example.com', phone: '084-567-8901', status: 'active', roles: ['editor', 'viewer'], activeRole: 'editor', role: 'editor' },
+  { name: 'นิรันดร์ เจริญ', email: 'niran@example.com', phone: '085-678-9012', status: 'inactive', roles: ['user'], activeRole: 'user', role: 'user' },
 ];
 
 const orders = [

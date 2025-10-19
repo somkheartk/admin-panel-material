@@ -1,14 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './user.schema';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { CreateUserDto, UpdateUserDto, SwitchRoleDto } from './user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+    // Handle backward compatibility: if role is provided, add it to roles array
+    if (createUserDto.role && !createUserDto.roles) {
+      createUserDto.roles = [createUserDto.role];
+      createUserDto.activeRole = createUserDto.role;
+    }
     const createdUser = new this.userModel(createUserDto);
     return createdUser.save();
   }
@@ -26,12 +31,42 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    // Handle backward compatibility: if role is provided, update roles array
+    if (updateUserDto.role && !updateUserDto.roles) {
+      const user = await this.findOne(id);
+      const currentRoles = user.roles || [];
+      if (!currentRoles.includes(updateUserDto.role)) {
+        updateUserDto.roles = [...currentRoles, updateUserDto.role];
+      }
+      updateUserDto.activeRole = updateUserDto.role;
+    }
     const updatedUser = await this.userModel
       .findByIdAndUpdate(id, updateUserDto, { new: true })
       .exec();
     if (!updatedUser) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
+    return updatedUser;
+  }
+
+  async switchRole(id: string, switchRoleDto: SwitchRoleDto): Promise<User> {
+    const user = await this.findOne(id);
+    
+    // Validate that the role exists in user's roles array
+    if (!user.roles || !user.roles.includes(switchRoleDto.activeRole)) {
+      throw new BadRequestException(
+        `Role '${switchRoleDto.activeRole}' is not assigned to this user`
+      );
+    }
+
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(id, { activeRole: switchRoleDto.activeRole }, { new: true })
+      .exec();
+    
+    if (!updatedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    
     return updatedUser;
   }
 

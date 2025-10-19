@@ -6,7 +6,10 @@ export interface User {
   email: string;
   phone?: string;
   status: string;
-  role: string;
+  roles: string[];
+  activeRole: string;
+  // Keep for backward compatibility
+  role?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -16,6 +19,9 @@ export interface CreateUserDto {
   email: string;
   phone?: string;
   status?: string;
+  roles?: string[];
+  activeRole?: string;
+  // Keep for backward compatibility
   role?: string;
 }
 
@@ -24,7 +30,14 @@ export interface UpdateUserDto {
   email?: string;
   phone?: string;
   status?: string;
+  roles?: string[];
+  activeRole?: string;
+  // Keep for backward compatibility
   role?: string;
+}
+
+export interface SwitchRoleDto {
+  activeRole: string;
 }
 
 export const usersApi = {
@@ -50,6 +63,11 @@ export const usersApi = {
 
   update: async (id: string, data: UpdateUserDto): Promise<User> => {
     const response = await apiClient.put(`/users/${id}`, data);
+    return response.data;
+  },
+
+  switchRole: async (id: string, data: SwitchRoleDto): Promise<User> => {
+    const response = await apiClient.patch(`/users/${id}/switch-role`, data);
     return response.data;
   },
 
