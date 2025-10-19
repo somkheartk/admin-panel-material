@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, Typography, Box, Avatar } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface StatCardProps {
   title: string;
@@ -19,6 +20,7 @@ export default function StatCard({
   trend, 
   iconBgColor = 'primary.main' 
 }: StatCardProps) {
+  const { t } = useLanguage();
   const isPositiveTrend = trend && trend > 0;
   const isNegativeTrend = trend && trend < 0;
 
@@ -74,11 +76,11 @@ export default function StatCard({
             )}
             {!isPositiveTrend && !isNegativeTrend && (
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                No change
+                {t('dashboard.noChange')}
               </Typography>
             )}
             <Typography variant="body2" color="text.secondary">
-              from last month
+              {t('dashboard.fromLastMonth')}
             </Typography>
           </Box>
         )}

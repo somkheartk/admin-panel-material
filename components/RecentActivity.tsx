@@ -15,13 +15,15 @@ import PersonIcon from '@mui/icons-material/Person';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import { usersApi, User } from '@/lib/api/users';
 import { ordersApi, Order } from '@/lib/api/orders';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function RecentActivity() {
+  const { t, language } = useLanguage();
   const [activities, setActivities] = useState<any[]>([]);
 
   useEffect(() => {
     loadActivities();
-  }, []);
+  }, [language]); // Reload when language changes
 
   const loadActivities = async () => {
     try {
@@ -32,7 +34,7 @@ export default function RecentActivity() {
 
       const recentUsers = users.slice(0, 2).map((user: User) => ({
         id: `user-${user._id}`,
-        title: 'ผู้ใช้ใหม่สมัครสมาชิก',
+        title: t('dashboard.newUser'),
         description: user.name,
         time: formatTime(user.createdAt),
         icon: <PersonIcon />,
@@ -41,7 +43,7 @@ export default function RecentActivity() {
 
       const recentOrders = orders.slice(0, 3).map((order: Order) => ({
         id: `order-${order._id}`,
-        title: 'มีคำสั่งซื้อใหม่',
+        title: t('dashboard.newOrder'),
         description: `${order.orderNumber} - ${order.customerName}`,
         time: formatTime(order.createdAt),
         icon: <ShoppingBagIcon />,
@@ -67,11 +69,11 @@ export default function RecentActivity() {
     const diffDays = Math.floor(diffMs / 86400000);
 
     if (diffMins < 60) {
-      return `${diffMins} นาทีที่แล้ว`;
+      return `${diffMins} ${t('dashboard.minutesAgo')}`;
     } else if (diffHours < 24) {
-      return `${diffHours} ชั่วโมงที่แล้ว`;
+      return `${diffHours} ${t('dashboard.hoursAgo')}`;
     } else {
-      return `${diffDays} วันที่แล้ว`;
+      return `${diffDays} ${t('dashboard.daysAgo')}`;
     }
   };
 
@@ -79,15 +81,15 @@ export default function RecentActivity() {
     <Card>
       <CardContent>
         <Typography variant="h6" fontWeight={600} gutterBottom>
-          กิจกรรมล่าสุด
+          {t('dashboard.recentActivity')}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          อัปเดตและกิจกรรมล่าสุด
+          {t('dashboard.recentUpdates')}
         </Typography>
         <List sx={{ pt: 0 }}>
           {activities.length === 0 ? (
             <ListItem sx={{ px: 0 }}>
-              <ListItemText primary="ไม่มีกิจกรรม" />
+              <ListItemText primary={t('dashboard.noActivity')} />
             </ListItem>
           ) : (
             activities.map((activity, index) => (
