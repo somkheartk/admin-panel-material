@@ -68,11 +68,14 @@ export default function Header() {
   const handleSwitchRole = async (roleId: string) => {
     setSwitchingRole(true);
     try {
+      console.log('Switching to role:', roleId);
       await switchRole(roleId);
       handleRoleMenuClose();
-    } catch (error) {
+      console.log('Role switched successfully to:', roleId);
+    } catch (error: any) {
       console.error('Failed to switch role:', error);
-      alert(t('users.errorSwitchRole'));
+      const errorMessage = error?.response?.data?.message || error?.message || t('users.errorSwitchRole');
+      alert(`${t('users.errorSwitchRole')}: ${errorMessage}`);
     } finally {
       setSwitchingRole(false);
     }

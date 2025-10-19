@@ -52,10 +52,23 @@ export class UsersService {
   async switchRole(id: string, switchRoleDto: SwitchRoleDto): Promise<User> {
     const user = await this.findOne(id);
     
+    // Log for debugging (using structured logging to avoid format string injection)
+    console.log('Switching role for user:', {
+      userId: id,
+      currentRoles: user.roles,
+      currentActiveRole: user.activeRole,
+      requestedRole: switchRoleDto.activeRole,
+    });
+    
     // Validate that the role exists in user's roles array
     if (!user.roles || !user.roles.includes(switchRoleDto.activeRole)) {
+      console.error('Role validation failed for user:', {
+        userId: id,
+        userRoles: user.roles,
+        requestedRole: switchRoleDto.activeRole,
+      });
       throw new BadRequestException(
-        `Role '${switchRoleDto.activeRole}' is not assigned to this user`
+        `Role '${switchRoleDto.activeRole}' is not assigned to this user. Available roles: ${user.roles?.join(', ') || 'none'}`
       );
     }
 
@@ -67,6 +80,10 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
     
+    console.log('Successfully switched role for user:', {
+      userId: id,
+      newActiveRole: switchRoleDto.activeRole,
+    });
     return updatedUser;
   }
 
