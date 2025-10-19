@@ -11,6 +11,7 @@ import {
   MenuItem,
   Divider,
   ListItemIcon,
+  Button,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -19,13 +20,16 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LanguageIcon from '@mui/icons-material/Language';
 import { useColorScheme } from '@mui/material/styles';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 const drawerWidth = 260;
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { mode, setMode } = useColorScheme();
+  const { language, setLanguage, t } = useLanguage();
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -38,6 +42,10 @@ export default function Header() {
 
   const toggleColorMode = () => {
     setMode(mode === 'light' ? 'dark' : 'light');
+  };
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'th' ? 'en' : 'th');
   };
 
   return (
@@ -53,10 +61,20 @@ export default function Header() {
     >
       <Toolbar>
         <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-          Dashboard
+          {t('header.title')}
         </Typography>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<LanguageIcon />}
+            onClick={toggleLanguage}
+            sx={{ textTransform: 'none' }}
+          >
+            {language === 'th' ? 'EN' : 'TH'}
+          </Button>
+
           <IconButton color="inherit" onClick={toggleColorMode}>
             {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
           </IconButton>
@@ -102,20 +120,20 @@ export default function Header() {
             <ListItemIcon>
               <AccountCircleIcon fontSize="small" />
             </ListItemIcon>
-            Profile
+            {t('header.profile')}
           </MenuItem>
           <MenuItem>
             <ListItemIcon>
               <SettingsIcon fontSize="small" />
             </ListItemIcon>
-            Settings
+            {t('header.settings')}
           </MenuItem>
           <Divider />
           <MenuItem>
             <ListItemIcon>
               <LogoutIcon fontSize="small" />
             </ListItemIcon>
-            Logout
+            {t('header.logout')}
           </MenuItem>
         </Menu>
       </Toolbar>

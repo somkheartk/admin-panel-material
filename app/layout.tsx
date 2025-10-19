@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ThemeRegistry from "@/lib/ThemeRegistry";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 
 export const metadata: Metadata = {
   title: "Admin Panel - Material UI 3",
@@ -24,7 +25,9 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeRegistry>
-          {children}
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
         </ThemeRegistry>
       </body>
     </html>

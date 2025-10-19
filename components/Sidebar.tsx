@@ -19,20 +19,22 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 const drawerWidth = 260;
 
-const menuItems = [
-  { text: 'Dashboard', icon: <DashboardIcon />, href: '/' },
-  { text: 'Users', icon: <PeopleIcon />, href: '/users' },
-  { text: 'Products', icon: <InventoryIcon />, href: '/products' },
-  { text: 'Orders', icon: <ShoppingCartIcon />, href: '/orders' },
-  { text: 'Analytics', icon: <BarChartIcon />, href: '/analytics' },
-  { text: 'Settings', icon: <SettingsIcon />, href: '/settings' },
-];
-
 export default function Sidebar() {
   const pathname = usePathname();
+  const { t } = useLanguage();
+
+  const menuItems = [
+    { text: t('common.dashboard'), icon: <DashboardIcon />, href: '/' },
+    { text: t('common.users'), icon: <PeopleIcon />, href: '/users' },
+    { text: t('common.products'), icon: <InventoryIcon />, href: '/products' },
+    { text: t('common.orders'), icon: <ShoppingCartIcon />, href: '/orders' },
+    { text: t('common.analytics'), icon: <BarChartIcon />, href: '/analytics' },
+    { text: t('common.settings'), icon: <SettingsIcon />, href: '/settings' },
+  ];
 
   return (
     <Drawer
@@ -49,10 +51,10 @@ export default function Sidebar() {
     >
       <Box sx={{ p: 3 }}>
         <Typography variant="h6" fontWeight={700} color="primary">
-          Admin Panel
+          {t('sidebar.adminPanel')}
         </Typography>
         <Typography variant="caption" color="text.secondary">
-          Material UI 3
+          {t('sidebar.materialUI')}
         </Typography>
       </Box>
       <Divider />

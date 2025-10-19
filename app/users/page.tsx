@@ -30,16 +30,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { usersApi, User, CreateUserDto, UpdateUserDto } from '@/lib/api/users';
-
-const availableRoles = [
-  { value: 'user', label: 'ผู้ใช้' },
-  { value: 'admin', label: 'ผู้ดูแล' },
-  { value: 'editor', label: 'บรรณาธิการ' },
-  { value: 'viewer', label: 'ผู้ชม' },
-  { value: 'manager', label: 'ผู้จัดการ' },
-];
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function UsersPage() {
+  const { t } = useLanguage();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +50,14 @@ export default function UsersPage() {
   const [switchRoleAnchor, setSwitchRoleAnchor] = useState<null | HTMLElement>(null);
   const [selectedUserForRoleSwitch, setSelectedUserForRoleSwitch] = useState<User | null>(null);
 
+  const availableRoles = [
+    { value: 'user', label: t('roles.user') },
+    { value: 'admin', label: t('roles.admin') },
+    { value: 'editor', label: t('roles.editor') },
+    { value: 'viewer', label: t('roles.viewer') },
+    { value: 'manager', label: t('roles.manager') },
+  ];
+
   useEffect(() => {
     loadUsers();
   }, []);
@@ -67,7 +69,7 @@ export default function UsersPage() {
       const data = await usersApi.getAll();
       setUsers(data);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'ไม่สามารถโหลดข้อมูลผู้ใช้ได้');
+      setError(err.response?.data?.message || t('users.errorLoad'));
     } finally {
       setLoading(false);
     }
@@ -113,17 +115,17 @@ export default function UsersPage() {
       handleCloseDialog();
       loadUsers();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+      setError(err.response?.data?.message || t('users.errorSave'));
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('คุณต้องการลบผู้ใช้นี้หรือไม่?')) {
+    if (window.confirm(t('users.deleteConfirm'))) {
       try {
         await usersApi.delete(id);
         loadUsers();
       } catch (err: any) {
-        setError(err.response?.data?.message || 'ไม่สามารถลบผู้ใช้ได้');
+        setError(err.response?.data?.message || t('users.errorDelete'));
       }
     }
   };
@@ -153,7 +155,7 @@ export default function UsersPage() {
       handleCloseRoleSwitch();
       loadUsers();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'ไม่สามารถเปลี่ยนบทบาทได้');
+      setError(err.response?.data?.message || t('users.errorSwitchRole'));
       handleCloseRoleSwitch();
     }
   };
@@ -168,14 +170,14 @@ export default function UsersPage() {
       <Container maxWidth={false}>
         <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h4" component="h1">
-            จัดการผู้ใช้
+            {t('users.title')}
           </Typography>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
             onClick={() => handleOpenDialog()}
           >
-            เพิ่มผู้ใช้ใหม่
+            {t('users.addNew')}
           </Button>
         </Box>
 
@@ -189,26 +191,26 @@ export default function UsersPage() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>ชื่อ</TableCell>
-                <TableCell>อีเมล</TableCell>
-                <TableCell>เบอร์โทร</TableCell>
-                <TableCell>สถานะ</TableCell>
-                <TableCell>บทบาททั้งหมด</TableCell>
-                <TableCell>บทบาทปัจจุบัน</TableCell>
-                <TableCell align="right">จัดการ</TableCell>
+                <TableCell>{t('common.name')}</TableCell>
+                <TableCell>{t('common.email')}</TableCell>
+                <TableCell>{t('common.phone')}</TableCell>
+                <TableCell>{t('common.status')}</TableCell>
+                <TableCell>{t('users.allRoles')}</TableCell>
+                <TableCell>{t('users.currentRole')}</TableCell>
+                <TableCell align="right">{t('common.actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={7} align="center">
-                    กำลังโหลด...
+                    {t('common.loading')}
                   </TableCell>
                 </TableRow>
               ) : users.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} align="center">
-                    ไม่มีข้อมูลผู้ใช้
+                    {t('common.noData')}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -223,7 +225,7 @@ export default function UsersPage() {
                       <TableCell>{user.phone}</TableCell>
                       <TableCell>
                         <Chip
-                          label={user.status === 'active' ? 'ใช้งาน' : 'ไม่ใช้งาน'}
+                          label={user.status === 'active' ? t('common.active') : t('common.inactive')}
                           color={user.status === 'active' ? 'success' : 'default'}
                           size="small"
                         />
@@ -252,7 +254,7 @@ export default function UsersPage() {
                               size="small"
                               color="primary"
                               onClick={(e) => handleOpenRoleSwitch(e, user)}
-                              title="สลับบทบาท"
+                              title={t('users.switchRole')}
                             >
                               <SwapHorizIcon fontSize="small" />
                             </IconButton>
@@ -302,13 +304,13 @@ export default function UsersPage() {
 
         <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
           <DialogTitle>
-            {editingUser ? 'แก้ไขผู้ใช้' : 'เพิ่มผู้ใช้ใหม่'}
+            {editingUser ? t('users.editUser') : t('users.addNew')}
           </DialogTitle>
           <DialogContent>
             <Box sx={{ pt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
               <TextField
                 name="name"
-                label="ชื่อ"
+                label={t('common.name')}
                 value={formData.name}
                 onChange={handleChange}
                 fullWidth
@@ -316,7 +318,7 @@ export default function UsersPage() {
               />
               <TextField
                 name="email"
-                label="อีเมล"
+                label={t('common.email')}
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
@@ -325,22 +327,22 @@ export default function UsersPage() {
               />
               <TextField
                 name="phone"
-                label="เบอร์โทร"
+                label={t('common.phone')}
                 value={formData.phone}
                 onChange={handleChange}
                 fullWidth
               />
               <TextField
                 name="status"
-                label="สถานะ"
+                label={t('common.status')}
                 select
                 value={formData.status}
                 onChange={handleChange}
                 fullWidth
                 SelectProps={{ native: true }}
               >
-                <option value="active">ใช้งาน</option>
-                <option value="inactive">ไม่ใช้งาน</option>
+                <option value="active">{t('common.active')}</option>
+                <option value="inactive">{t('common.inactive')}</option>
               </TextField>
               <Autocomplete
                 multiple
@@ -360,14 +362,14 @@ export default function UsersPage() {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="บทบาททั้งหมด"
-                    placeholder="เลือกบทบาท"
+                    label={t('users.allRoles')}
+                    placeholder={t('users.selectRoles')}
                   />
                 )}
               />
               <TextField
                 name="activeRole"
-                label="บทบาทปัจจุบัน"
+                label={t('users.currentRole')}
                 select
                 value={formData.activeRole}
                 onChange={handleChange}
@@ -383,9 +385,9 @@ export default function UsersPage() {
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog}>ยกเลิก</Button>
+            <Button onClick={handleCloseDialog}>{t('common.cancel')}</Button>
             <Button onClick={handleSubmit} variant="contained">
-              บันทึก
+              {t('common.save')}
             </Button>
           </DialogActions>
         </Dialog>
