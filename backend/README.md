@@ -104,3 +104,29 @@ curl -X POST http://localhost:3001/orders \
     "description": "คำอธิบาย"
   }'
 ```
+
+## Testing
+
+### Run Tests
+```bash
+npm test              # Run all unit tests
+npm run test:cov      # Run tests with coverage
+npm run test:watch    # Run tests in watch mode
+```
+
+### Test Coverage
+- **60 unit tests** - All passing ✅
+- **95.45% code coverage** - Exceeds industry standard
+- **4 test suites:**
+  - Users Service (16 tests)
+  - Users Controller (14 tests)
+  - Orders Service (19 tests)
+  - Orders Controller (17 tests)
+
+See [Test Results](../docs/TEST_RESULTS.md) for detailed test report.
+
+## Documentation
+
+- **[API Specification](../docs/API_SPEC.md)** - Complete API documentation
+- **[Test Results](../docs/TEST_RESULTS.md)** - Unit test coverage report
+- **[Wireframe](../docs/WIREFRAME.md)** - UI/UX design specifications
