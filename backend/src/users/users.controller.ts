@@ -7,9 +7,10 @@ import {
   Body,
   Param,
   ValidationPipe,
+  Patch,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { CreateUserDto, UpdateUserDto, SwitchRoleDto } from './user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -41,6 +42,14 @@ export class UsersController {
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
   ) {
     return this.usersService.update(id, updateUserDto);
+  }
+
+  @Patch(':id/switch-role')
+  switchRole(
+    @Param('id') id: string,
+    @Body(ValidationPipe) switchRoleDto: SwitchRoleDto,
+  ) {
+    return this.usersService.switchRole(id, switchRoleDto);
   }
 
   @Delete(':id')

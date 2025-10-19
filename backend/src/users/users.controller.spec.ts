@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { CreateUserDto, UpdateUserDto, SwitchRoleDto } from './user.dto';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -13,6 +13,8 @@ describe('UsersController', () => {
     email: 'somchai@example.com',
     phone: '0812345678',
     status: 'active',
+    roles: ['admin', 'user'],
+    activeRole: 'admin',
     role: 'แอดมิน',
     createdAt: new Date('2024-01-15T10:30:00.000Z'),
     updatedAt: new Date('2024-01-15T10:30:00.000Z'),
@@ -26,6 +28,8 @@ describe('UsersController', () => {
       email: 'somying@example.com',
       phone: '0823456789',
       status: 'active',
+      roles: ['user'],
+      activeRole: 'user',
       role: 'ผู้ใช้',
       createdAt: new Date('2024-01-16T11:20:00.000Z'),
       updatedAt: new Date('2024-01-16T11:20:00.000Z'),
@@ -37,6 +41,7 @@ describe('UsersController', () => {
     findAll: jest.fn(),
     findOne: jest.fn(),
     update: jest.fn(),
+    switchRole: jest.fn(),
     remove: jest.fn(),
     count: jest.fn(),
   };
@@ -255,6 +260,51 @@ describe('UsersController', () => {
         controller.remove('507f1f77bcf86cd799439999')
       ).rejects.toThrow('User with ID 507f1f77bcf86cd799439999 not found');
       expect(service.remove).toHaveBeenCalledWith('507f1f77bcf86cd799439999');
+    });
+  });
+
+  describe('switchRole', () => {
+    it('should switch user role successfully', async () => {
+      const switchRoleDto: SwitchRoleDto = {
+        activeRole: 'user',
+      };
+
+      const updatedUser = {
+        ...mockUser,
+        activeRole: 'user',
+      };
+
+      mockUsersService.switchRole.mockResolvedValue(updatedUser);
+
+      const result = await controller.switchRole(
+        '507f1f77bcf86cd799439011',
+        switchRoleDto
+      );
+
+      expect(result).toEqual(updatedUser);
+      expect(service.switchRole).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439011',
+        switchRoleDto
+      );
+      expect(service.switchRole).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle invalid role switch', async () => {
+      const switchRoleDto: SwitchRoleDto = {
+        activeRole: 'invalid_role',
+      };
+
+      mockUsersService.switchRole.mockRejectedValue(
+        new Error("Role 'invalid_role' is not assigned to this user")
+      );
+
+      await expect(
+        controller.switchRole('507f1f77bcf86cd799439011', switchRoleDto)
+      ).rejects.toThrow("Role 'invalid_role' is not assigned to this user");
+      expect(service.switchRole).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439011',
+        switchRoleDto
+      );
     });
   });
 });

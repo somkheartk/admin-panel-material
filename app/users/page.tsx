@@ -20,12 +20,24 @@ import {
   Typography,
   Box,
   Alert,
+  Autocomplete,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import DashboardLayout from '@/components/DashboardLayout';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { usersApi, User, CreateUserDto, UpdateUserDto } from '@/lib/api/users';
+
+const availableRoles = [
+  { value: 'user', label: 'ผู้ใช้' },
+  { value: 'admin', label: 'ผู้ดูแล' },
+  { value: 'editor', label: 'บรรณาธิการ' },
+  { value: 'viewer', label: 'ผู้ชม' },
+  { value: 'manager', label: 'ผู้จัดการ' },
+];
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -38,8 +50,11 @@ export default function UsersPage() {
     email: '',
     phone: '',
     status: 'active',
-    role: 'user',
+    roles: ['user'],
+    activeRole: 'user',
   });
+  const [switchRoleAnchor, setSwitchRoleAnchor] = useState<null | HTMLElement>(null);
+  const [selectedUserForRoleSwitch, setSelectedUserForRoleSwitch] = useState<User | null>(null);
 
   useEffect(() => {
     loadUsers();
@@ -66,7 +81,8 @@ export default function UsersPage() {
         email: user.email,
         phone: user.phone || '',
         status: user.status,
-        role: user.role,
+        roles: user.roles || (user.role ? [user.role] : ['user']),
+        activeRole: user.activeRole || user.role || 'user',
       });
     } else {
       setEditingUser(null);
@@ -75,7 +91,8 @@ export default function UsersPage() {
         email: '',
         phone: '',
         status: 'active',
-        role: 'user',
+        roles: ['user'],
+        activeRole: 'user',
       });
     }
     setOpenDialog(true);
@@ -118,6 +135,34 @@ export default function UsersPage() {
     });
   };
 
+  const handleOpenRoleSwitch = (event: React.MouseEvent<HTMLElement>, user: User) => {
+    setSwitchRoleAnchor(event.currentTarget);
+    setSelectedUserForRoleSwitch(user);
+  };
+
+  const handleCloseRoleSwitch = () => {
+    setSwitchRoleAnchor(null);
+    setSelectedUserForRoleSwitch(null);
+  };
+
+  const handleSwitchRole = async (newRole: string) => {
+    if (!selectedUserForRoleSwitch) return;
+    
+    try {
+      await usersApi.switchRole(selectedUserForRoleSwitch._id, { activeRole: newRole });
+      handleCloseRoleSwitch();
+      loadUsers();
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'ไม่สามารถเปลี่ยนบทบาทได้');
+      handleCloseRoleSwitch();
+    }
+  };
+
+  const getRoleLabel = (roleValue: string) => {
+    const role = availableRoles.find(r => r.value === roleValue);
+    return role ? role.label : roleValue;
+  };
+
   return (
     <DashboardLayout>
       <Container maxWidth={false}>
@@ -148,59 +193,112 @@ export default function UsersPage() {
                 <TableCell>อีเมล</TableCell>
                 <TableCell>เบอร์โทร</TableCell>
                 <TableCell>สถานะ</TableCell>
-                <TableCell>บทบาท</TableCell>
+                <TableCell>บทบาททั้งหมด</TableCell>
+                <TableCell>บทบาทปัจจุบัน</TableCell>
                 <TableCell align="right">จัดการ</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
+                  <TableCell colSpan={7} align="center">
                     กำลังโหลด...
                   </TableCell>
                 </TableRow>
               ) : users.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
+                  <TableCell colSpan={7} align="center">
                     ไม่มีข้อมูลผู้ใช้
                   </TableCell>
                 </TableRow>
               ) : (
-                users.map((user) => (
-                  <TableRow key={user._id}>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.phone}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={user.status === 'active' ? 'ใช้งาน' : 'ไม่ใช้งาน'}
-                        color={user.status === 'active' ? 'success' : 'default'}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>{user.role === 'admin' ? 'ผู้ดูแล' : 'ผู้ใช้'}</TableCell>
-                    <TableCell align="right">
-                      <IconButton
-                        size="small"
-                        onClick={() => handleOpenDialog(user)}
-                        color="primary"
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => handleDelete(user._id)}
-                        color="error"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))
+                users.map((user) => {
+                  const userRoles = user.roles || (user.role ? [user.role] : ['user']);
+                  const userActiveRole = user.activeRole || user.role || 'user';
+                  
+                  return (
+                    <TableRow key={user._id}>
+                      <TableCell>{user.name}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>{user.phone}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={user.status === 'active' ? 'ใช้งาน' : 'ไม่ใช้งาน'}
+                          color={user.status === 'active' ? 'success' : 'default'}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                          {userRoles.map((role) => (
+                            <Chip
+                              key={role}
+                              label={getRoleLabel(role)}
+                              size="small"
+                              variant="outlined"
+                            />
+                          ))}
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Chip
+                            label={getRoleLabel(userActiveRole)}
+                            color="primary"
+                            size="small"
+                          />
+                          {userRoles.length > 1 && (
+                            <IconButton
+                              size="small"
+                              color="primary"
+                              onClick={(e) => handleOpenRoleSwitch(e, user)}
+                              title="สลับบทบาท"
+                            >
+                              <SwapHorizIcon fontSize="small" />
+                            </IconButton>
+                          )}
+                        </Box>
+                      </TableCell>
+                      <TableCell align="right">
+                        <IconButton
+                          size="small"
+                          onClick={() => handleOpenDialog(user)}
+                          color="primary"
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleDelete(user._id)}
+                          color="error"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               )}
             </TableBody>
           </Table>
         </TableContainer>
+
+        {/* Role Switch Menu */}
+        <Menu
+          anchorEl={switchRoleAnchor}
+          open={Boolean(switchRoleAnchor)}
+          onClose={handleCloseRoleSwitch}
+        >
+          {selectedUserForRoleSwitch?.roles?.map((role) => (
+            <MenuItem
+              key={role}
+              onClick={() => handleSwitchRole(role)}
+              selected={role === selectedUserForRoleSwitch.activeRole}
+            >
+              {getRoleLabel(role)}
+            </MenuItem>
+          ))}
+        </Menu>
 
         <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
           <DialogTitle>
@@ -244,17 +342,43 @@ export default function UsersPage() {
                 <option value="active">ใช้งาน</option>
                 <option value="inactive">ไม่ใช้งาน</option>
               </TextField>
+              <Autocomplete
+                multiple
+                options={availableRoles}
+                getOptionLabel={(option) => option.label}
+                value={availableRoles.filter(r => formData.roles?.includes(r.value))}
+                onChange={(_, newValue) => {
+                  const newRoles = newValue.map(v => v.value);
+                  setFormData({
+                    ...formData,
+                    roles: newRoles,
+                    activeRole: newRoles.includes(formData.activeRole || '') 
+                      ? formData.activeRole 
+                      : newRoles[0] || 'user',
+                  });
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="บทบาททั้งหมด"
+                    placeholder="เลือกบทบาท"
+                  />
+                )}
+              />
               <TextField
-                name="role"
-                label="บทบาท"
+                name="activeRole"
+                label="บทบาทปัจจุบัน"
                 select
-                value={formData.role}
+                value={formData.activeRole}
                 onChange={handleChange}
                 fullWidth
                 SelectProps={{ native: true }}
               >
-                <option value="user">ผู้ใช้</option>
-                <option value="admin">ผู้ดูแล</option>
+                {formData.roles?.map((role) => (
+                  <option key={role} value={role}>
+                    {getRoleLabel(role)}
+                  </option>
+                ))}
               </TextField>
             </Box>
           </DialogContent>
