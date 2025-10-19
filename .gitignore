@@ -18,6 +18,10 @@
 # testing
 /coverage
 /backend/coverage
+/test-results
+robot-venv/
+*.pyc
+__pycache__/
 
 # next.js
 /.next/
