@@ -8,6 +8,7 @@
     "dev": "nodemon --watch src --exec ts-node src/main.ts",
     "seed": "ts-node src/seed.ts",
     "migrate:roles": "ts-node src/migrate-user-roles.ts",
+    "verify:roles": "ts-node src/verify-roles.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage"

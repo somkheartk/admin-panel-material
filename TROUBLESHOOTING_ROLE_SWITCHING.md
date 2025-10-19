@@ -63,6 +63,24 @@ npm run migrate:roles
 
 ## Verification Steps
 
+### Step 0: Quick Verification Script
+**Option A: Using backend verification script**
+```bash
+cd backend
+npm run verify:roles
+```
+
+**Option B: Using health check API endpoint**
+```bash
+# Check backend is running
+curl http://localhost:3001/health
+
+# Check role configurations
+curl http://localhost:3001/health/roles
+```
+
+These will check all users in the database and report any issues with role configurations.
+
 ### Step 1: Check User Data in Database
 ```javascript
 // In MongoDB shell
@@ -188,21 +206,24 @@ The seed data includes users with multiple roles:
 ## Quick Fix Commands
 
 ```bash
-# Complete reset and setup
+# 1. Verify current role configuration
 cd backend
-npm install
-npm run seed          # Seed database with test data
-cd ..
-npm install
-npm run dev           # Start frontend
+npm run verify:roles
 
-# In another terminal
-cd backend
-npm run dev           # Start backend
-
-# If issues persist, run migration
-cd backend
+# 2. If issues found, run migration
 npm run migrate:roles
+
+# 3. Or complete reset and setup
+npm run seed          # Seed database with test data
+
+# 4. Verify again
+npm run verify:roles
+
+# 5. Start services
+npm run dev           # Start backend (in backend directory)
+
+# In another terminal (from project root)
+npm run dev           # Start frontend
 ```
 
 ## Contact Support
