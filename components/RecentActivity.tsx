@@ -10,7 +10,6 @@ import {
   ListItemText,
   Avatar,
   Box,
-  Chip,
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -84,11 +83,11 @@ export default function RecentActivity() {
                   </Typography>
                 }
                 secondary={
-                  <Box>
-                    <Typography variant="body2" color="text.secondary">
+                  <Box component="span">
+                    <Typography variant="body2" color="text.secondary" component="span" display="block">
                       {activity.description}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary" component="span">
                       {activity.time}
                     </Typography>
                   </Box>
