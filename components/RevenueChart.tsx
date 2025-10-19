@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent, Typography, Box, useTheme } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 const data = [
   { name: 'Jan', value: 4000 },
@@ -15,15 +16,16 @@ const data = [
 
 export default function RevenueChart() {
   const theme = useTheme();
+  const { t } = useLanguage();
 
   return (
     <Card>
       <CardContent>
         <Typography variant="h6" fontWeight={600} gutterBottom>
-          Revenue Overview
+          {t('dashboard.revenueOverview')}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          Monthly revenue trend
+          {t('dashboard.monthlyRevenueTrend')}
         </Typography>
         <Box sx={{ width: '100%', height: 300 }}>
           <ResponsiveContainer width="100%" height="100%">

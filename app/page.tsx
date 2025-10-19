@@ -11,8 +11,10 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { usersApi } from '@/lib/api/users';
 import { ordersApi } from '@/lib/api/orders';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function Home() {
+  const { t } = useLanguage();
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalOrders: 0,
@@ -42,7 +44,7 @@ export default function Home() {
         growth: 23.5,
       });
     } catch (err: any) {
-      setError('ไม่สามารถโหลดข้อมูลได้ กรุณาตรวจสอบการเชื่อมต่อกับ Backend');
+      setError(t('dashboard.errorLoadStats'));
       console.error('Error loading stats:', err);
     } finally {
       setLoading(false);
@@ -61,7 +63,7 @@ export default function Home() {
           {/* Statistics Cards */}
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <StatCard
-              title="จำนวนผู้ใช้ทั้งหมด"
+              title={t('dashboard.totalUsers')}
               value={loading ? '...' : stats.totalUsers.toLocaleString('th-TH')}
               icon={<PeopleIcon />}
               trend={12.5}
@@ -70,7 +72,7 @@ export default function Home() {
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <StatCard
-              title="คำสั่งซื้อทั้งหมด"
+              title={t('dashboard.totalOrders')}
               value={loading ? '...' : stats.totalOrders.toLocaleString('th-TH')}
               icon={<ShoppingCartIcon />}
               trend={8.2}
@@ -79,7 +81,7 @@ export default function Home() {
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <StatCard
-              title="รายได้"
+              title={t('dashboard.revenue')}
               value={loading ? '...' : `฿${stats.revenue.toLocaleString('th-TH')}`}
               icon={<AttachMoneyIcon />}
               trend={15.3}
@@ -88,7 +90,7 @@ export default function Home() {
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <StatCard
-              title="การเติบโต"
+              title={t('dashboard.growth')}
               value={`${stats.growth}%`}
               icon={<TrendingUpIcon />}
               trend={4.1}
