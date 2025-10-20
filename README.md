@@ -375,15 +375,33 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-### Backend - Deploy to Digital Ocean
+### Backend - Deploy to DigitalOcean App Platform 🌟 Recommended
 
-The backend includes an automated CI/CD pipeline for deploying to Digital Ocean using GitHub Actions.
+Deploy your backend to DigitalOcean's fully managed Platform-as-a-Service in under 10 minutes!
 
-**Quick Setup:**
-1. Create a Digital Ocean account and container registry
-2. Set up a droplet with Docker installed
-3. Configure GitHub secrets (see [backend/QUICK_SETUP.md](backend/QUICK_SETUP.md))
-4. Push to `main` branch - deployment happens automatically!
+**Quick Start:**
+1. Get DigitalOcean API token from [API Dashboard](https://cloud.digitalocean.com/account/api/tokens)
+2. Add GitHub Secrets: `DIGITALOCEAN_ACCESS_TOKEN`, `MONGODB_URI`
+3. Push to `main` branch - automatic deployment!
+
+**Documentation:**
+- 🚀 [Quick Start Guide](QUICK_START_DEPLOY.md) - Deploy in 10 minutes
+- 📖 [Complete Guide (English)](backend/DEPLOYMENT_APP_PLATFORM.md) - Full documentation
+- 📖 [คู่มือภาษาไทย](backend/DEPLOYMENT_APP_PLATFORM_TH.md) - Thai language guide
+- ⚙️ [Workflow Configuration](.github/workflows/deploy-backend-app-platform.yml) - CI/CD pipeline
+- 📝 [App Platform Spec](.do/app.yaml) - Platform configuration
+
+**Features:**
+- ✅ Automatic deployments from GitHub
+- ✅ Built-in HTTPS/SSL certificates
+- ✅ Auto-scaling capabilities
+- ✅ Integrated monitoring and logging
+- ✅ No server management required
+- ✅ Starting at $5/month
+
+### Backend - Deploy to DigitalOcean Droplet (Alternative)
+
+For more control, deploy using Docker on a DigitalOcean Droplet.
 
 **Documentation:**
 - 📋 [Quick Setup Guide](backend/QUICK_SETUP.md) - Fast setup instructions
@@ -392,10 +410,10 @@ The backend includes an automated CI/CD pipeline for deploying to Digital Ocean 
 
 The deployment pipeline automatically:
 - Builds Docker image for the backend
-- Pushes to Digital Ocean Container Registry
-- Deploys to your Digital Ocean droplet
+- Pushes to DigitalOcean Container Registry
+- Deploys to your DigitalOcean droplet
 - Manages container lifecycle (stop old, start new)
 
 **Workflow triggers:**
 - Automatic: Push to `main` branch with backend changes
-- Manual: GitHub Actions tab → "Deploy Backend to Digital Ocean" → Run workflow
+- Manual: GitHub Actions tab → "Deploy Backend to DigitalOcean" → Run workflow
