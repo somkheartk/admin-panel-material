@@ -265,38 +265,4 @@ Enterprise Setup:
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Comparison: App Platform vs Droplet
 
-```
-Feature                 App Platform    Droplet
-─────────────────────────────────────────────────────────
-Server Management       No              Yes
-SSL/TLS Setup          Automatic        Manual
-Monitoring             Built-in         Manual setup
-Auto-scaling           Yes              Manual
-Load Balancing         Built-in         Manual setup
-GitHub Integration     Native           Via Actions
-Rollback               1-click          Manual
-Cost (minimum)         $5/month         $6/month
-Setup Time             10 minutes       1-2 hours
-Maintenance            None             Regular
-```
-
-## Migration Path
-
-```
-Current State (Droplet)
-        ↓
-[Parallel Deployment]
-        ↓
-Run Both Systems
-(Test App Platform)
-        ↓
-Update Frontend URL
-        ↓
-Monitor & Validate
-        ↓
-Retire Droplet
-        ↓
-App Platform Only
-```
