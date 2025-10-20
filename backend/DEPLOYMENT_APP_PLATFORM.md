@@ -90,12 +90,13 @@ The deployment typically takes 5-10 minutes.
 
 1. **Source Directory**: Enter `backend`
 2. **Build Command**: `npm install && npm run build`
-3. **Run Command**: `npm start`
+3. **Run Command**: `npm start` (or leave empty to use Procfile)
 4. **HTTP Port**: `3001`
 5. **Environment Variables**: Click **Edit** and add:
    - `PORT` = `3001`
    - `NODE_ENV` = `production`
    - `MONGODB_URI` = (your MongoDB connection string, mark as **secret**)
+   - `ALLOWED_ORIGINS` = (optional, comma-separated list of allowed CORS origins)
 
 #### Step 3: Configure Resources
 

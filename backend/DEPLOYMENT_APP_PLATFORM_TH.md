@@ -96,6 +96,7 @@ curl https://your-app-url.ondigitalocean.app/health
    - `PORT` = `3001`
    - `NODE_ENV` = `production`
    - `MONGODB_URI` = (connection string ที่ถูกต้อง)
+   - `ALLOWED_ORIGINS` = (ตัวเลือก: รายการ origin ที่อนุญาต คั่นด้วย comma)
 
 3. ตรวจสอบ MongoDB connection:
    - ใน DigitalOcean Managed Database → Settings → Trusted Sources

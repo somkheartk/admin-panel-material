@@ -20,6 +20,9 @@ Create a `.env` file in the backend directory:
 ```env
 MONGODB_URI=mongodb://localhost:27017/admin-panel
 PORT=3001
+NODE_ENV=development
+# Optional: Comma-separated list of allowed CORS origins for production
+# ALLOWED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
 ```
 
 ## Running MongoDB
