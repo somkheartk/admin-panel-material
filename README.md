@@ -18,6 +18,7 @@ A modern, responsive admin dashboard built with Next.js 15, Material UI 3 (MUI v
 - **Data Visualization**: Revenue chart using Recharts library
 - **Activity Feed**: Real-time activity feed with recent users and orders
 - **TypeScript**: Fully typed codebase for better development experience
+- **CI/CD Pipeline**: Automated deployment to Digital Ocean / ระบบ Deploy อัตโนมัติไปยัง Digital Ocean
 
 ## 🚀 Tech Stack
 
@@ -366,8 +367,35 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 - [Material UI Documentation](https://mui.com/material-ui/getting-started/)
 - [Recharts Documentation](https://recharts.org/en-US/)
 
-## 🚀 Deploy on Vercel
+## 🚀 Deployment / การ Deploy
+
+### Frontend - Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_source=github&utm_medium=readme).
 
 Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+### Backend - Deploy to Digital Ocean
+
+The backend includes an automated CI/CD pipeline for deploying to Digital Ocean using GitHub Actions.
+
+**Quick Setup:**
+1. Create a Digital Ocean account and container registry
+2. Set up a droplet with Docker installed
+3. Configure GitHub secrets (see [backend/QUICK_SETUP.md](backend/QUICK_SETUP.md))
+4. Push to `main` branch - deployment happens automatically!
+
+**Documentation:**
+- 📋 [Quick Setup Guide](backend/QUICK_SETUP.md) - Fast setup instructions
+- 📖 [Detailed Deployment Guide](backend/DEPLOYMENT.md) - Complete documentation
+- ⚙️ [Workflow Configuration](.github/workflows/deploy-backend.yml) - CI/CD pipeline
+
+The deployment pipeline automatically:
+- Builds Docker image for the backend
+- Pushes to Digital Ocean Container Registry
+- Deploys to your Digital Ocean droplet
+- Manages container lifecycle (stop old, start new)
+
+**Workflow triggers:**
+- Automatic: Push to `main` branch with backend changes
+- Manual: GitHub Actions tab → "Deploy Backend to Digital Ocean" → Run workflow
