@@ -125,6 +125,26 @@ npm run test:watch    # Run tests in watch mode
 
 See [Test Results](../docs/TEST_RESULTS.md) for detailed test report.
 
+## Deployment
+
+### DigitalOcean App Platform (Recommended)
+
+Deploy to DigitalOcean's fully managed Platform-as-a-Service:
+
+- **[App Platform Deployment Guide (English)](DEPLOYMENT_APP_PLATFORM.md)** - Complete deployment guide
+- **[คู่มือการ Deploy (ไทย)](DEPLOYMENT_APP_PLATFORM_TH.md)** - คู่มือภาษาไทย
+
+Quick start:
+1. Add GitHub Secrets: `DIGITALOCEAN_ACCESS_TOKEN`, `MONGODB_URI`
+2. Push to `main` branch or trigger workflow manually
+3. Deployment happens automatically
+
+### DigitalOcean Droplet (Alternative)
+
+Deploy to a DigitalOcean Droplet using Docker:
+
+- **[Droplet Deployment Guide](DEPLOYMENT.md)** - Docker-based deployment
+
 ## Documentation
 
 - **[API Specification](../docs/API_SPEC.md)** - Complete API documentation

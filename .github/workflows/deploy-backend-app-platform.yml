@@ -1,0 +1,42 @@
+name: Deploy Backend to DigitalOcean App Platform
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.do/app.yaml'
+      - '.github/workflows/deploy-backend-app-platform.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      
+      - name: Deploy to App Platform
+        run: |
+          # Check if app exists
+          APP_ID=$(doctl apps list --format ID,Spec.Name --no-header | grep "admin-panel-backend" | awk '{print $1}' || echo "")
+          
+          if [ -z "$APP_ID" ]; then
+            echo "Creating new app..."
+            doctl apps create --spec .do/app.yaml
+          else
+            echo "Updating existing app (ID: $APP_ID)..."
+            doctl apps update $APP_ID --spec .do/app.yaml
+          fi
+      
+      - name: Wait for deployment
+        run: |
+          echo "Deployment initiated. Check status at https://cloud.digitalocean.com/apps"
+          echo "Use 'doctl apps list' to see your apps"
