@@ -399,21 +399,4 @@ Deploy your backend to DigitalOcean's fully managed Platform-as-a-Service in und
 - ✅ No server management required
 - ✅ Starting at $5/month
 
-### Backend - Deploy to DigitalOcean Droplet (Alternative)
 
-For more control, deploy using Docker on a DigitalOcean Droplet.
-
-**Documentation:**
-- 📋 [Quick Setup Guide](backend/QUICK_SETUP.md) - Fast setup instructions
-- 📖 [Detailed Deployment Guide](backend/DEPLOYMENT.md) - Complete documentation
-- ⚙️ [Workflow Configuration](.github/workflows/deploy-backend.yml) - CI/CD pipeline
-
-The deployment pipeline automatically:
-- Builds Docker image for the backend
-- Pushes to DigitalOcean Container Registry
-- Deploys to your DigitalOcean droplet
-- Manages container lifecycle (stop old, start new)
-
-**Workflow triggers:**
-- Automatic: Push to `main` branch with backend changes
-- Manual: GitHub Actions tab → "Deploy Backend to DigitalOcean" → Run workflow

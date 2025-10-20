@@ -127,7 +127,7 @@ See [Test Results](../docs/TEST_RESULTS.md) for detailed test report.
 
 ## Deployment
 
-### DigitalOcean App Platform (Recommended)
+### DigitalOcean App Platform
 
 Deploy to DigitalOcean's fully managed Platform-as-a-Service:
 
@@ -138,12 +138,6 @@ Quick start:
 1. Add GitHub Secrets: `DIGITALOCEAN_ACCESS_TOKEN`, `MONGODB_URI`
 2. Push to `main` branch or trigger workflow manually
 3. Deployment happens automatically
-
-### DigitalOcean Droplet (Alternative)
-
-Deploy to a DigitalOcean Droplet using Docker:
-
-- **[Droplet Deployment Guide](DEPLOYMENT.md)** - Docker-based deployment
 
 ## Documentation
 
