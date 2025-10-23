@@ -31,9 +31,9 @@ jobs:
           cat > .do/env.yaml << EOF
           envs:
             - key: PORT
-              value: "3001"
+              value: "${{ secrets.PORT || '3001' }}"
             - key: NODE_ENV
-              value: production
+              value: "${{ secrets.NODE_ENV || 'production' }}"
             - key: MONGODB_URI
               scope: RUN_AND_BUILD_TIME
               type: SECRET

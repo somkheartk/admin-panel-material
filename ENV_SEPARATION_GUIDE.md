@@ -29,9 +29,9 @@ The CI/CD pipeline handles everything automatically:
        cat > .do/env.yaml << EOF
        envs:
          - key: PORT
-           value: "3001"
+           value: "${{ secrets.PORT || '3001' }}"
          - key: NODE_ENV
-           value: production
+           value: "${{ secrets.NODE_ENV || 'production' }}"
          - key: MONGODB_URI
            scope: RUN_AND_BUILD_TIME
            type: SECRET
@@ -68,14 +68,19 @@ If you need to deploy manually:
    ```yaml
    envs:
      - key: PORT
-       value: "3001"
+       value: "${PORT:-3001}"
      - key: NODE_ENV
-       value: production
+       value: "${NODE_ENV:-production}"
      - key: MONGODB_URI
        scope: RUN_AND_BUILD_TIME
        type: SECRET
-       value: "mongodb://your-actual-connection-string"
+       value: "${MONGODB_URI}"
    ```
+   
+   **Note:** The `${VAR:-default}` syntax means:
+   - Read from environment variable `VAR` if set
+   - Otherwise use `default` value
+   - For actual deployment, replace with your actual values or ensure environment variables are set
 
 3. **Deploy using the merge script:**
    ```bash
@@ -90,10 +95,12 @@ If you need to deploy manually:
 
 Ensure these secrets are configured in your repository:
 
-| Secret Name | Description | Example |
-|------------|-------------|---------|
-| `DIGITALOCEAN_ACCESS_TOKEN` | DigitalOcean API token | `dop_v1_...` |
-| `MONGODB_URI` | MongoDB connection string | `mongodb+srv://user:pass@cluster.mongodb.net/dbname` |
+| Secret Name | Description | Required | Default |
+|------------|-------------|----------|---------|
+| `DIGITALOCEAN_ACCESS_TOKEN` | DigitalOcean API token | Yes | N/A |
+| `MONGODB_URI` | MongoDB connection string | Yes | N/A |
+| `PORT` | HTTP port for the backend | No | "3001" |
+| `NODE_ENV` | Node environment | No | "production" |
 
 To add secrets:
 1. Go to GitHub repository → Settings → Secrets and variables → Actions
