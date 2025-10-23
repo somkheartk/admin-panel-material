@@ -38,6 +38,8 @@ jobs:
               scope: RUN_AND_BUILD_TIME
               type: SECRET
               value: "${{ secrets.MONGODB_URI }}"
+            - key: ALLOWED_ORIGINS
+              value: "${{ secrets.ALLOWED_ORIGINS }}"
           EOF
           echo "Environment file created"
 

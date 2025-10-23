@@ -36,6 +36,8 @@ The CI/CD pipeline handles everything automatically:
            scope: RUN_AND_BUILD_TIME
            type: SECRET
            value: "${{ secrets.MONGODB_URI }}"
+         - key: ALLOWED_ORIGINS
+           value: "${{ secrets.ALLOWED_ORIGINS }}"
        EOF
    ```
 
@@ -75,6 +77,8 @@ If you need to deploy manually:
        scope: RUN_AND_BUILD_TIME
        type: SECRET
        value: "${MONGODB_URI}"
+     - key: ALLOWED_ORIGINS
+       value: "${ALLOWED_ORIGINS}"
    ```
    
    **Note:** The `${VAR:-default}` syntax means:
@@ -99,6 +103,7 @@ Ensure these secrets are configured in your repository:
 |------------|-------------|----------|---------|
 | `DIGITALOCEAN_ACCESS_TOKEN` | DigitalOcean API token | Yes | N/A |
 | `MONGODB_URI` | MongoDB connection string | Yes | N/A |
+| `ALLOWED_ORIGINS` | Comma-separated list of allowed CORS origins | Yes | N/A |
 | `PORT` | HTTP port for the backend | No | "3001" |
 | `NODE_ENV` | Node environment | No | "production" |
 
