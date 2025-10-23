@@ -36,17 +36,10 @@ services:
       failure_threshold: 3
 
     # Environment variables
-    envs:
-      - key: PORT
-        value: "3001"
-      - key: NODE_ENV
-        value: production
-      - key: MONGODB_URI
-        scope: RUN_AND_BUILD_TIME
-        type: SECRET
-      # Optional: Comma-separated list of allowed CORS origins
-      # - key: ALLOWED_ORIGINS
-      #   value: "https://yourdomain.com,https://www.yourdomain.com"
+    # Note: Environment variables are now managed in .do/env.yaml
+    # They will be merged during deployment via the GitHub Actions workflow
+    # See .do/env.yaml.example for the template
+    envs: []
 
     # Routes
     routes:

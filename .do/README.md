@@ -4,7 +4,10 @@ This directory contains the App Platform specification for deploying the backend
 
 ## Files
 
-- `app.yaml` - App Platform specification file
+- `app.yaml` - App Platform specification file (main configuration)
+- `env.yaml.example` - Template for environment variables
+- `env.yaml` - Actual environment variables (NOT committed to version control)
+- `merge-env.sh` - Helper script to merge environment variables locally
 
 ## App Platform Specification
 
@@ -19,13 +22,52 @@ The `app.yaml` file defines:
 - **Instance Size**: Basic XXS (512MB RAM, 1 vCPU)
 - **Auto-deploy**: Enabled on push to main branch
 
-## Environment Variables
+## Environment Variables Management
 
-The following environment variables must be configured in App Platform:
+Environment variables are now separated from the main app configuration for better security.
+
+### For CI/CD Deployment (GitHub Actions)
+
+The GitHub Actions workflow automatically:
+1. Creates `env.yaml` from GitHub Secrets
+2. Merges it with `app.yaml` during deployment
+3. Deploys the merged configuration to DigitalOcean
+
+Required GitHub Secrets:
+- `DIGITALOCEAN_ACCESS_TOKEN` - DigitalOcean API token
+- `MONGODB_URI` - MongoDB connection string
+
+### For Local/Manual Deployment
+
+If you need to deploy manually using `doctl`:
+
+1. Copy the example file:
+   ```bash
+   cp .do/env.yaml.example .do/env.yaml
+   ```
+
+2. Edit `.do/env.yaml` with your actual values
+
+3. Run the merge script and deploy:
+   ```bash
+   cd .do
+   ./merge-env.sh
+   doctl apps create --spec /tmp/app-final.yaml
+   # or for updates:
+   doctl apps update <APP_ID> --spec /tmp/app-final.yaml
+   ```
+
+### Environment Variables List
 
 - `PORT` - HTTP port (default: 3001)
 - `NODE_ENV` - Node environment (default: production)
 - `MONGODB_URI` - MongoDB connection string (SECRET)
+
+### Security Notes
+
+- **NEVER** commit `.do/env.yaml` to version control (it's in .gitignore)
+- Store sensitive values only in GitHub Secrets or secure locations
+- The `env.yaml.example` file is safe to commit as it contains no real secrets
 
 ## Health Check
 
