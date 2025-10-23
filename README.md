@@ -369,6 +369,28 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 
 ## 🚀 Deployment / การ Deploy
 
+### Docker Deployment 🐳 ✨ NEW
+
+Deploy using Docker containers for maximum flexibility and portability!
+
+**Quick Start:**
+```bash
+# Pull and run from GitHub Container Registry
+docker pull ghcr.io/somkheartk/admin-panel-material/frontend:latest
+docker pull ghcr.io/somkheartk/admin-panel-material/backend:latest
+```
+
+**Documentation:**
+- 📖 [Complete Docker Guide](DOCKER_GUIDE.md) - Full deployment instructions / คู่มือฉบับสมบูรณ์
+- ⚙️ [Docker Pipeline](.github/workflows/docker-push.yml) - Automated image builds
+
+**Features:**
+- ✅ Automatic Docker image builds on push
+- ✅ Multi-stage builds for optimal image size
+- ✅ Images hosted on GitHub Container Registry (GHCR)
+- ✅ Tagged with branch, SHA, and latest
+- ✅ Easy to deploy anywhere (AWS, GCP, Azure, DigitalOcean, etc.)
+
 ### Frontend - Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_source=github&utm_medium=readme).
