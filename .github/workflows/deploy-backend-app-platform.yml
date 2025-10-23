@@ -26,6 +26,34 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
+      - name: Create env.yaml from secrets
+        run: |
+          cat > .do/env.yaml << EOF
+          envs:
+            - key: PORT
+              value: "3001"
+            - key: NODE_ENV
+              value: production
+            - key: MONGODB_URI
+              scope: RUN_AND_BUILD_TIME
+              type: SECRET
+              value: "${{ secrets.MONGODB_URI }}"
+          EOF
+          echo "Environment file created"
+
+      - name: Merge environment variables
+        run: |
+          # Install yq for YAML processing
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          
+          # Merge env.yaml into app.yaml
+          yq eval-all 'select(fileIndex == 0).services[0].envs = select(fileIndex == 1).envs | select(fileIndex == 0)' \
+            .do/app.yaml .do/env.yaml > /tmp/app-final.yaml
+          
+          echo "Merged app spec:"
+          cat /tmp/app-final.yaml
+
       - name: Deploy to App Platform
         run: |
           # Check if app exists
@@ -34,10 +62,10 @@ jobs:
 
           if [ -z "$APP_ID" ]; then
             echo "Creating new app..."
-            doctl apps create --spec .do/app.yaml
+            doctl apps create --spec /tmp/app-final.yaml
           else
             echo "Updating existing app (ID: $APP_ID)..."
-            doctl apps update $APP_ID --spec .do/app.yaml
+            doctl apps update $APP_ID --spec /tmp/app-final.yaml
           fi
 
       - name: Wait for deployment
