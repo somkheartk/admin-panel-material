@@ -37,6 +37,10 @@ Required GitHub Secrets:
 - `DIGITALOCEAN_ACCESS_TOKEN` - DigitalOcean API token
 - `MONGODB_URI` - MongoDB connection string
 
+Optional GitHub Secrets (with defaults):
+- `PORT` - HTTP port (defaults to "3001" if not set)
+- `NODE_ENV` - Node environment (defaults to "production" if not set)
+
 ### For Local/Manual Deployment
 
 If you need to deploy manually using `doctl`:
@@ -59,9 +63,9 @@ If you need to deploy manually using `doctl`:
 
 ### Environment Variables List
 
-- `PORT` - HTTP port (default: 3001)
-- `NODE_ENV` - Node environment (default: production)
-- `MONGODB_URI` - MongoDB connection string (SECRET)
+- `PORT` - HTTP port (default: "3001", can be set via GitHub Secret)
+- `NODE_ENV` - Node environment (default: "production", can be set via GitHub Secret)
+- `MONGODB_URI` - MongoDB connection string (SECRET, required)
 
 ### Security Notes
 
